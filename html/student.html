@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STUDENT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap">
+    <link rel="stylesheet" href="../css/student.css">
+<link rel="icon" type="image/png" href="../img/headerLogo.png">
+
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+
+            <a id="home-btn" href="../home.html">
+                <img src="../img/logo.png">
+            </a>
+        </div>
+
+        <div class="welcome">
+            <h1 id="welcomAlert"></h1>
+            <p id="time"></p>
+        </div>
+
+        <div class="header-left">
+            <button id="back-to-admin-btn">חזרה לניהול הסטודנטים</button>
+            <button class="logout">התנתקות</button>
+        </div>
+    </header>
+
+    <section class="stats">
+
+
+        <div class="card">
+            <h2 id="tasksCard"></h2>
+            <span>מטלות</span>
+        </div>
+
+        <div class="card">
+            <h2 id="restTasks"></h2>
+            <span>לביצוע</span>
+        </div>
+        <div class="card">
+            <h2 id="percents"></h2>
+            <span>הושלמו</span>
+        </div>
+    </section>
+
+    <section class="student-metrics">
+        <div class="metric-box msg-highlight">
+            <div class="metric-header">הודעות מהמנהל</div>
+            <div class="msg-body">
+                <ul class="admin-msg-list">
+                    <li>נא להגיש את מטלת ה-C עד היום בלילה!</li>
+                    <li>מחר יתקיים תרגול מיוחד בשעה 17:00.</li>
+                    <li>עודכנו ציונים במערכת לכלל הסטודנטים.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="metric-box task-highlight">
+            <div class="metric-header"> משימה קרובה ביותר</div>
+            <div class="task-next-info">
+                <span class="task-next-name"></span>
+                <span class="difficulty-indicator high-bg"></span>
+            </div>
+        </div>
+
+        <div class="metric-box progress-highlight">
+            <div class="metric-header">התקדמות אישית</div>
+            <div class="circle-wrapper">
+                <div class="progress-circle-svg">
+                    <div class="inner-value"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tasks-section">
+        <div class="tasks-header-wrapper">
+            <h2 class="title">כל המטלות</h2>
+            <div class="student-search">
+                <input type="text" placeholder="חיפוש מטלה..." id="search">
+            </div>
+        </div>
+
+        <div class="tasks">
+
+
+        </div>
+    </section>
+    <script src="../js/data.js"></script>
+    <script src="../js/ls.js"></script>
+    <script src="../js/student.js"></script>
+</body>
+
+</html>

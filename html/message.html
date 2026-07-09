@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he" direction="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MESSAGES</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap">
+
+    <link rel="stylesheet" href="../css/message.css">
+<link rel="icon" type="image/png" href="../img/headerLogo.png">
+
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="../html/admin.html" id="home-btn">
+                <img src="../img/logo.png" alt="לוגו המערכת">
+            </a>
+        </div>
+        <div class="welcome">
+            <h1 id="welcomAlert">לוח הודעות מנהל</h1>
+            <p>עדכון תלמידים בהודעות והתראות שוטפות</p>
+        </div>
+        <div class="header-left">
+            <button class="logout">התנתקות</button>
+        </div>
+    </header>
+
+    <main class="messages-wrapper">
+
+        <section class="message-form-card">
+            <h2 class="section-title">פרסום הודעה חדשה</h2>
+            <form id="msg-form">
+                <div class="form-group">
+                    <label for="msg-text">תוכן ההודעה:</label>
+                    <textarea id="msg-text" placeholder="כתוב כאן את ההודעה לתלמידים שלך..." required
+                        rows="5" name="text"></textarea>
+                </div>
+                <button type="submit" id="send-msg-btn">פרסם הודעה לתלמידים</button>
+                <div id="isSuccess" class="status-message"></div>
+            </form>
+        </section>
+
+        <section class="messages-history-card">
+            <h2 class="section-title">הודעות שפורסמו לאחרונה</h2>
+            <div id="messages-container" class="messages-list">
+                <div class="msg-item">
+                    <p class="msg-content">נא לסיים את משימת הגשת פרויקט הגמר עד מחר בערב. בהצלחה לכולם!</p>
+                    <div class="msg-footer">
+                        <span class="msg-date">24/06/2026 | 18:30</span>
+                        <button class="delete-msg-btn" title="מחק הודעה">מחיקה</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <script src="../js/data.js"></script>
+    <script src="../js/ls.js"></script>
+    <script src="../js/message.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ADDING TASK</title>
+    <link rel="stylesheet" href="../css/addTask.css">
+    <link rel="icon" type="image/png" href="../img/headerLogo.png">
+
+</head>
+
+<body>
+
+<a href="admin.html" class="back">
+    ←חזרה 
+</a>
+
+<div class="container">
+
+    <div class="left">
+
+        <img src="../img/logo.png" class="bigLogo">
+
+    </div>
+
+    <div class="right">
+
+        <div class="shape"></div>
+
+        <div class="card">
+
+            <h2 id="addingTaskTitle">הוספת משימה</h2>
+
+            <form id="form">
+
+                <input type="text" placeholder="מקצוע" required class="input" name="category">
+
+                <textarea placeholder="תיאור המשימה" required class="input" name="title"></textarea>
+
+                <input type="date" required class="input" name="deadline">
+
+                <select class="input" name="priority" required>
+
+                    <option value="" selected disabled>רמת חשיבות</option>
+                    <option value="high">גבוהה</option>
+                    <option value="medium">בינונית</option>
+                    <option value="low">נמוכה</option>
+
+                </select>
+
+                
+
+                <button id="addingTaskBtn">
+
+                    הוסף משימה
+
+                </button>
+
+            </form>
+
+            <div id="msg"> </div>
+
+        </div>
+
+    </div>
+
+</div>
+  <script src="../js/data.js"></script>
+    <script src="../js/ls.js"></script>
+    <script src="../js/addingTask.js"></script>
+</body>
+
+</html>

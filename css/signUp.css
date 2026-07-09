@@ -1,0 +1,237 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+
+background:#edf2f8;
+height:100vh;
+overflow:hidden;
+
+}
+
+.back{
+
+position:absolute;
+
+top:30px;
+
+right:45px;
+
+text-decoration:none;
+
+color:#295fe7;
+
+font-size:24px;
+
+font-weight:bold;
+
+}
+
+.container{
+
+height:100vh;
+
+display:flex;
+
+}
+
+.left{
+
+width:42%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+.bigLogo{
+
+width:420px;
+
+opacity:.95;
+
+}
+
+.right{
+
+width:58%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+position:relative;
+
+}
+
+.shape{
+
+    position:absolute;
+
+    left:30px;
+
+    top:40px;
+
+    width:430px;
+
+    height:560px;
+
+    background:#2164f3;
+
+    border-radius:
+        79% 21% 56% 44% /
+        33% 64% 36% 67%;
+
+    transform:rotate(-8deg);
+
+}
+.card{
+
+position:relative;
+
+z-index:10;
+
+width:460px;
+
+background:white;
+
+padding:40px;
+
+border-radius:35px;
+
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+}
+
+.card h2{
+
+text-align:center;
+
+font-size:36px;
+
+color:#173f82;
+
+margin-bottom:28px;
+
+}
+
+form{
+
+display:flex;
+
+flex-direction:column;
+
+gap:22px;
+
+
+}
+
+input,
+textarea,
+select{
+
+border:none;
+
+background:#f4f7fc;
+
+border-radius:18px;
+
+padding:17px;
+
+font-size:16px;
+
+outline:none;
+
+}
+input,
+select{
+
+    height: 60px;
+
+}
+
+textarea{
+
+height:110px;
+
+resize:none;
+
+}
+.input:focus{
+    border-bottom: 3px solid #0066ff; 
+}
+
+button{
+
+height:58px;
+
+border:none;
+
+background:#2164f3;
+
+color:white;
+
+border-radius:18px;
+
+font-size:20px;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+button:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 10px 20px rgba(33,100,243,.2);
+
+}
+input::placeholder,
+textarea::placeholder{
+
+    color: #7d8696;
+    opacity: 1;
+
+}
+select{
+
+    color: #7d8696;
+
+}
+#msg{
+
+
+    margin-top: 20px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: 500;
+
+    color: #1d4ed8;
+
+    transition: .3s;
+
+}
+
+
+
+

@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADDING STUDENT</title>
+    <link rel="stylesheet" href="../css/newStudent.css">
+<link rel="icon" type="image/png" href="../img/headerLogo.png">
+
+</head>
+
+<body>
+
+    
+
+       <a href="admin.html" class="back">
+    ←חזרה 
+       </a>
+
+
+    <div class="container">
+
+    <div class="left">
+
+        <img src="../img/logo.png" class="bigLogo">
+
+    </div>
+
+    <div class="right">
+
+        <div class="shape"></div>
+
+        <div class="card">
+
+            <h2>הוספת סטודנט</h2>
+
+             <form id="addingForm">
+
+                    <input
+                        name="id"
+                        type="text"
+                        placeholder="מספר זהות"
+                        required>
+
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="שם מלא"
+                        required>
+
+                    <input
+                        name="userName"
+                        type="text"
+                        placeholder="שם משתמש"
+                        required>
+
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="סיסמה"
+                        required>
+
+                    <button type="submit">
+                        הוסף סטודנט
+                    </button>
+
+                </form>
+
+            <div id="message" class="message"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+  
+
+    <script src="../js/data.js"></script>
+    <script src="../js/ls.js"></script>
+    <script src="../js/newStudent.js"></script>
+
+</body>
+
+</html>
+
