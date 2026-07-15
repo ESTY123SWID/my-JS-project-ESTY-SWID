@@ -12,28 +12,43 @@ const tasksToHtml = document.querySelector('.tasks');
 const search = document.querySelector('#search');
 const backToAdminBtn = document.querySelector('#back-to-admin-btn');
 const msgBody = document.querySelector('.msg-body');
+const homeBtn = document.querySelector('#home-btn');
+let fromAdmin = false
 
+
+const tasksAll = getTasks()
 backToAdminBtn.style.display = "none"
 
+const findAdminIdByTaskid = (tId) => {
+    const filtedId = tasksAll.find(x => x.id == tId)
+
+    return filtedId.principalId
+}
+
+homeBtn.onclick = () => {
+    removeCurrent()
+
+}
+let currentCheck = "";
+
 const currentReal = () => {
-    const currentCheck = getCurrent()
+    currentCheck = getCurrent()
+
     if (!currentCheck) {
-        window.location.href = "../html/login."
+        location.href = "../html/login.html"
         return
     }
 
     if (currentCheck.role == "admin") {
+        fromAdmin = true
         backToAdminBtn.style.display = "block"
-        return getUsers().find(user => user.id == new URLSearchParams(location.search).get("id")&&user.principalId==new URLSearchParams(location.search).get("principalId"))
+        return getUsers().find(user => user.id == new URLSearchParams(location.search).get("id"))
 
     }
     return currentCheck
 }
+
 const current = currentReal()
-
-const homeBtn = document.querySelector('#home-btn');
-const tasksAll = getTasks()
-
 
 setMsgBody = () => {
     msgBody.innerText = ""
@@ -42,7 +57,8 @@ setMsgBody = () => {
     const msgAll = getMessages()
     const IsExistsManagerBackUp = getManagerBackUp();
     const principalId = current.principalId
-    const filt = msgAll.filter(x => x.principalId.trim() == principalId.trim())
+    
+    const filt = msgAll.filter(x => fromAdmin ? (x.principalId == currentCheck.id ): (principalId.includes(x.principalId))) 
     if (filt.length > 0) {
         filt.forEach(msg => {
             const message = document.createElement("li")
@@ -63,28 +79,25 @@ backToAdminBtn.onclick = () => {
 }
 
 const setTimeing = () => {
-    setInterval(() => {
+
         const daysOfWeek = ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "שבת"];
         const options = { hour: '2-digit', minute: '2-digit' };
         time.innerText = `${daysOfWeek[new Date().getDay()]} | ${new Date().toLocaleDateString()} | ${new Date().toLocaleTimeString('he-IL', options)}`
-    }, 100)
 
 }
 const welcomMessage = (current) => {
 
     const splitName = current.name.trim().split(' ');
+    
+    const currentHour = new Date().getHours();
 
-
-
-const currentHour = new Date().getHours(); 
-
-const greetings = [
-    { upTo: 5, text: "לילה טוב" },       
-    { upTo: 12, text: "בוקר טוב" },     
-    { upTo: 17, text: "צהריים טובים" }, 
-    { upTo: 22, text: "ערב טוב" }       
-];
-const greeting = greetings.find(g => currentHour < g.upTo)?.text || "לילה טוב";
+    const greetings = [
+        { upTo: 5, text: "לילה טוב" },
+        { upTo: 12, text: "בוקר טוב" },
+        { upTo: 17, text: "צהריים טובים" },
+        { upTo: 22, text: "ערב טוב" }
+    ];
+    const greeting = greetings.find(g => currentHour < g.upTo)?.text || "לילה טוב";
 
     welcomTo.innerText = `${greeting} , ${splitName[0]}`
 }
@@ -96,8 +109,11 @@ const getNextTask = (taskArray) => {
     return futureTasks[0] || null;
 };
 const setDetails = (current) => {
-    const total = current.taskArray?.length || 0;
-    const rest = current.taskArray?.filter(x => !x.isDone).length || 0
+    const total = fromAdmin ? (current.taskArray?.filter(x => findAdminIdByTaskid(x.tId) == currentCheck.id).length || 0) : (current.taskArray.length || 0)
+
+    const rest = current.taskArray?.filter(x => fromAdmin ? (!x.isDone && findAdminIdByTaskid(x.tId) == currentCheck.id) :( !x.isDone)).length || 0
+    
+
     tasksCard.innerText = total
     restTasks.innerText = rest
     const totalPercents = total > 0 ? Math.round(((total - rest) / total) * 100) : 0;
@@ -105,31 +121,29 @@ const setDetails = (current) => {
     innerValue.innerText = totalPercents + "%"
 
     progressCircle.style.setProperty('--percent', `${totalPercents}%`);
-    const totalTasks = tasksAll.filter(task => task.principalId == current.principalId)
-    //////////////////////////////////////////////////////////////////
+    const totalTasks = tasksAll.filter(task => fromAdmin ? task.principalId == currentCheck.id : current.principalId.includes(task.principalId))
     const incompleteTasks = current.taskArray.filter(element => {
         const originalTask = tasksAll.find(x => x.id == element.tId);
-        // בודקים שהמשימה שייכת לסטודנט, שהיא לא בוצעה, ושיש לה תאריך תקף
-        return originalTask && !element.isDone && originalTask.principalId == current.principalId;
+        return originalTask && !element.isDone
     });
 
-    // נמפה את זה כדי ש-getNextTask תקבל אובייקטים עם deadline ו-title
     const mappedTasks = incompleteTasks.map(element => {
         const originalTask = tasksAll.find(x => x.id == element.tId);
+        // totalTasks במקוםtasksAll זה לא עבד????????? למורה היקרה! אני אשמח להסבר למה כשכתבתי
         return {
+        
             ...element,
             title: originalTask.title,
             deadline: originalTask.deadline,
-            priority: originalTask.priority // נשמור גם את רמת הדחיפות לפיתוח הבא שלך
+            priority: originalTask.priority 
         };
     });
-
     const nextTask = getNextTask(mappedTasks);
     taskNextName.innerText = nextTask?.title || "----------------";
 
-    // בונוס: עדכון רמת הדחיפות של המשימה הקרובה ביותר במסך!
+  
     if (priorityIndicator) {
-        // מנקים לחלוטין קלאסים ישנים כדי שרק ה-CSS החדש ישפיע
+    
         priorityIndicator.className = "difficulty-indicator";
 
         if (nextTask) {
@@ -148,118 +162,103 @@ const setDetails = (current) => {
         }
     }
 
-    //////////////////////////////////////////////////////
 }
 const setCards = (arr) => {
     tasksToHtml.innerHTML = "";
 
     arr.forEach(element => {
-        const currentTask = tasksAll.find(x => x.id == element.tId)
-        const task = document.createElement("div")
-        task.className = "task";
-        const taskHeaderRow = document.createElement("div")
-        taskHeaderRow.className = "task-header-row";
-        const category = document.createElement("span")
-        category.className = "category";
-        category.innerText = currentTask.category
-        taskHeaderRow.append(category)
+        if ((fromAdmin && currentCheck.id == findAdminIdByTaskid(element.tId)) || !fromAdmin) {
+            const currentTask = tasksAll.find(x => x.id == element.tId)
+            const task = document.createElement("div")
+            task.className = "task";
+            const taskHeaderRow = document.createElement("div")
+            taskHeaderRow.className = "task-header-row";
+            const category = document.createElement("span")
+            category.className = "category";
+            category.innerText = currentTask.category
+            taskHeaderRow.append(category)
 
-        const priorityDot = document.createElement("span")
-        priorityDot.classList.add("priority-dot");
-        if (currentTask.priority === "high") {
-            priorityDot.classList.add("red-dot");
-            priorityDot.setAttribute("data-tooltip", "חשיבות: גבוהה");
+            const priorityDot = document.createElement("span")
+            priorityDot.classList.add("priority-dot");
+            if (currentTask.priority === "high") {
+                priorityDot.classList.add("red-dot");
+                priorityDot.setAttribute("data-tooltip", "חשיבות: גבוהה");
 
-        } else if (currentTask.priority === "medium") {
-            priorityDot.classList.add("orange-dot");
-            priorityDot.setAttribute("data-tooltip", "חשיבות: בינונית");
+            } else if (currentTask.priority === "medium") {
+                priorityDot.classList.add("orange-dot");
+                priorityDot.setAttribute("data-tooltip", "חשיבות: בינונית");
 
-        } else {
-            priorityDot.classList.add("green-dot");
-            priorityDot.setAttribute("data-tooltip", "חשיבות: נמוכה");
-
-        }
-
-        taskHeaderRow.append(priorityDot)
-        task.append(taskHeaderRow)
-        const taskTitle = document.createElement("div")
-        taskTitle.className = "task-title";
-        taskTitle.innerText = currentTask.title
-        task.append(taskTitle)
-        const deadline = document.createElement("p")
-        deadline.innerText = currentTask.deadline
-        task.append(deadline)
-        const studentTaskActions = document.createElement("div")
-        studentTaskActions.className = "student-task-actions"
-        const doneContainer = document.createElement("label")
-        doneContainer.className = "done-container"
-        const taskCheckbox = document.createElement("input")
-        taskCheckbox.className = "task-checkbox"
-        taskCheckbox.type = "checkbox"
-        taskCheckbox.checked = element.isDone;
-        const now = new Date();
-        const taskDeadline = new Date(currentTask.deadline);
-       
-        taskCheckbox.onchange = () => {
-
-      const timeNow = new Date().getTime();
-    const deadlineTime = new Date(currentTask.deadline).getTime();
-
-    if (timeNow > deadlineTime &&!element.isDone) {
-        alert("לא ניתן לסמן משימה כבוצעה לאחר תאריך ההגשה!");
-       taskCheckbox.checked = false; 
-        event.preventDefault(); 
-        return; 
-    }
-
-   
-
-
-            // 1. משנים את הסטטוס של המשימה הספציפית בתוך האובייקט הנוכחי
-            element.isDone = taskCheckbox.checked;
-
-            // 2. שולפים את המערך הכללי של המשתמשים
-            const users = getUsers();
-
-            // 3. מוצאים את המשתמש הנוכחי במערך
-            const index = users.findIndex(x => x.id == current.id);
-
-            if (index !== -1) {
-                // 4. מעדכנים את ה-taskArray של המשתמש בתוך המערך הגדול
-                users[index].taskArray = current.taskArray;
-
-                // 5. שומרים את המערך המעודכן בחזרה ל-LocalStorage
-                setUsers(users);
-
-
-                const loggedInUser = getCurrent();
-                if (loggedInUser.role == "student" && loggedInUser.id === current.id)
-                    localStorage.setItem("current", JSON.stringify(current))
-
-
+            } else {
+                priorityDot.classList.add("green-dot");
+                priorityDot.setAttribute("data-tooltip", "חשיבות: נמוכה");
 
             }
 
-            // 7. קוראים לפונקציות הריענון של המסך
-            setDetails(current);
-        };
-        doneContainer.append(taskCheckbox)
+            taskHeaderRow.append(priorityDot)
+            task.append(taskHeaderRow)
+            const taskTitle = document.createElement("div")
+            taskTitle.className = "task-title";
+            taskTitle.innerText = currentTask.title
+            task.append(taskTitle)
+            const deadline = document.createElement("p")
+            deadline.innerText = currentTask.deadline
+            task.append(deadline)
+            const studentTaskActions = document.createElement("div")
+            studentTaskActions.className = "student-task-actions"
+            const doneContainer = document.createElement("label")
+            doneContainer.className = "done-container"
+            const taskCheckbox = document.createElement("input")
+            taskCheckbox.className = "task-checkbox"
+            taskCheckbox.type = "checkbox"
+            if (fromAdmin) {
+                taskCheckbox.disabled = true
+            }
+            taskCheckbox.checked = element.isDone;
+            const now = new Date();
+            const taskDeadline = new Date(currentTask.deadline);
 
-        const checkMark = document.createElement("span")
-        checkMark.className = "checkmark"
-        doneContainer.append(checkMark)
-        const textNode = document.createTextNode("בוצע");
-        doneContainer.append(textNode);//חשוב מאוד! אסור לדרוס!
+            taskCheckbox.onchange = (e) => {
+
+                const timeNow = new Date().getTime();
+                const deadlineTime = new Date(currentTask.deadline).getTime();
+
+                if (timeNow > deadlineTime && !element.isDone) {
+                    alert("לא ניתן לסמן משימה כבוצעה לאחר תאריך ההגשה!");
+                    taskCheckbox.checked = false;
+                    event.preventDefault();
+                    return;
+                }
+                element.isDone = taskCheckbox.checked;
+                const users = getUsers();
+                const index = users.findIndex(x => x.id == current.id);
+
+                if (index !== -1) {
+                  
+                    users[index].taskArray = current.taskArray;
+                    setUsers(users);
+                     localStorage.setItem("current", JSON.stringify(current))
+                }
+
+                setDetails(current);
+            };
+            doneContainer.append(taskCheckbox)
+
+            const checkMark = document.createElement("span")
+            checkMark.className = "checkmark"
+            doneContainer.append(checkMark)
+            const textNode = document.createTextNode("בוצע");
+            doneContainer.append(textNode);
 
 
-        studentTaskActions.append(doneContainer)
-        task.append(studentTaskActions)
-        tasksToHtml.append(task)
+            studentTaskActions.append(doneContainer)
+            task.append(studentTaskActions)
+            tasksToHtml.append(task)
+        }
     });
 
 }
 search.oninput = (e) => {
-    filtArr = tasksAll.filter(x => x.principalId == current.principalId && (x.title.toLowerCase().includes(e.target.value.toLowerCase().trim()) || x.category.toLowerCase().includes(e.target.value.toLowerCase().trim())))
+    filtArr = tasksAll.filter(x => (fromAdmin ? x.principalId == current.id : current.principalId.includes(x.principalId)) && (x.title.toLowerCase().includes(e.target.value.toLowerCase().trim()) || x.category.toLowerCase().includes(e.target.value.toLowerCase().trim())))
     filtId = filtArr.map(x => x.id)
     filtfiltArr = current.taskArray.filter(x => filtId.includes(x.tId))
     if (filtfiltArr.length === 0) {
@@ -271,11 +270,7 @@ search.oninput = (e) => {
     }
 }
 logout.onclick = () => {
-
-
-
-
-
+    removeCurrent()
     window.location.href = "../html/login.html";
 }
 setMsgBody()
@@ -283,4 +278,5 @@ setTimeing()
 welcomMessage(current)
 setDetails(current)
 setCards(current.taskArray)
-setInterval(welcomMessage(current), 60000);
+setInterval(()=>welcomMessage(current), 60000);
+setInterval(setTimeing,1000*30)

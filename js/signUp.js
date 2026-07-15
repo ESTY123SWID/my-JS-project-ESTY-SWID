@@ -5,12 +5,12 @@ const rejex = {
     id: /^[0-9]{9}$/,
     name: /^([א-ת"'-]{2,})(\s+[א-ת"'-]{2,})+$/,
     userName: /^([A-Za-z0-9!@#$%^&*(),.?":{}|<>]{5,12})$/,
-    password: /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{5,15}$/,
+    password: /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{5,20}$/,
     campus: /^[A-Za-z-'א-ת]{2,100}$/,
     idMsg: "מספר תעודת זהות חייב לכלול 9 ספרות",
     nameMsg: "שם בעברית בלבד!",
     userNameMsg: " שם משתמש חייב להיות  אנגלית ותווים - בין 5 ל-12 תווים",
-    passwordMsg: "סיסמה חייבת להיות באנגלית בין 5 ל-15 תווים - כולל ספרה אחת ותו מיוחד",
+    passwordMsg: "סיסמה חייבת להיות באנגלית בין 5 ל-20 תווים - כולל ספרה אחת ותו מיוחד",
     campusMsg: "שם הקמפוס מכיל אותיות בלבד!"
 
 }
@@ -70,7 +70,7 @@ form.onsubmit = (e) => {
     Object.keys(data).forEach(key => {
         data[key] = data[key].trim();
     });
-    const users = getUsers() || []
+    const users = getUsers() 
 
     data["role"] = "admin"
     const isExist = users.find(x => x.id == data.id && x.role == "admin")
@@ -79,10 +79,13 @@ form.onsubmit = (e) => {
     }
     else {
         setUser(data)
+        localStorage.setItem("current",JSON.stringify(data))
+
         isSuccess.style.color = "#0f172a"
         isSuccess.innerText = "ההרשמה הושלמה.המשך יום טוב!"
         form.reset()
-        setTimeout(() => { window.location.href = "../home.html" }, 2000)
+
+        setTimeout(() => { window.location.href = "../html/admin.html" }, 2000)
 
     }
 

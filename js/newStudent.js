@@ -1,7 +1,6 @@
 const form = document.querySelector("#addingForm");
 const isSuccess = document.querySelector("#message");
 
-// בדיקת התחברות
 const current = getCurrent();
 if (!current) {
     window.location.href = "../html/login.html";
@@ -24,22 +23,22 @@ const validateInput = (input) => {
     const rule = rejex[input.name];
     const valueTrimmed = input.value.trim();
 
-  
+
     if (valueTrimmed === "") {
         input.style.borderBottom = "";
         return false;
     }
-console.log(rule)
+    console.log(rule)
     const isValid = rule.test(valueTrimmed);
 
     if (!isValid) {
-      
+
         isSuccess.innerText = rejex[input.name + "Msg"];
         isSuccess.style.color = "red";
         input.style.borderBottom = "2px solid red";
         return false;
     } else {
-       
+
         input.style.borderBottom = "";
         isSuccess.innerText = ""
         return true;
@@ -57,21 +56,21 @@ Array.from(form.elements).forEach(input => {
 
 
 form.onsubmit = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
-    isSuccess.innerText = ""; 
+    isSuccess.innerText = "";
     let isFormValid = true;
 
     Array.from(form.elements).forEach(input => {
         if (input.tagName === "INPUT") {
             const isValid = validateInput(input);
             if (!isValid) {
-                isFormValid = false; 
+                isFormValid = false;
             }
         }
     });
 
-    
+
     if (!isFormValid) {
         if (isSuccess.innerText === "") {
             isSuccess.innerText = "נא למלא את כל השדות כנדרש.";
@@ -80,33 +79,57 @@ form.onsubmit = (e) => {
         return;
     }
 
-   
+    const users = getUsers() 
+
     const data = Object.fromEntries(new FormData(e.target));
     Object.keys(data).forEach(key => {
         data[key] = data[key].trim();
     });
 
-    data["role"] = "student";
-    data["principalId"] = current.id;
-
-    // משימות לתלמיד החדש
-    const task = getTasks() || [];
-    const arr = task.filter(x => x.principalId == current.id);
-    const totalArr = [];
-    arr.forEach(element => {
-        totalArr.push({ tId: element.id, isDone: false });
-    });
-    data["taskArray"] = totalArr;
-
-    // בדיקה אם המשתמש כבר קיים
-    const users = getUsers() || [];
-    const isExsist = users.find(x => x.id == data.id && x.principalId == current.id);
-
-    if (isExsist) {
+    const isExsistForThisAdmin = users.find(x => x.id == data.id && x.principalId?.includes(current.id));
+    const isExsist = users.find(x => x.id == data.id)
+    if (isExsistForThisAdmin) {
         isSuccess.innerText = "משתמש קיים במערכת!";
         isSuccess.style.color = "red";
-    } else {
-        // שמירה והצלחה
+
+        return
+    }
+    else if (isExsist) {
+
+        const task = getTasks() 
+        const arr = task.filter(x => x.principalId == current.id);
+        const totalArr = isExsist.taskArray
+        arr.forEach(element => {
+            totalArr.push({ tId: element.id, isDone: false });
+        });
+
+
+        isExsist.principalId.push(current.id)
+
+        setUsers(users)
+
+        isSuccess.style.color = "#0f172a";
+        isSuccess.innerText = "התלמיד נוסף בהצלחה!";
+        form.reset();
+        setTimeout(() => {
+            window.location.href = "../html/admin.html";
+        }, 1500);
+        return
+    }
+    else {
+
+        data["role"] = "student";
+        data["principalId"] = [current.id];
+
+        
+        const task = getTasks() 
+        const arr = task.filter(x => x.principalId == current.id);
+        const totalArr = [];
+        arr.forEach(element => {
+            totalArr.push({ tId: element.id, isDone: false });
+        });
+        data["taskArray"] = totalArr;
+
         setUser(data);
         isSuccess.style.color = "#0f172a";
         isSuccess.innerText = "התלמיד נוסף בהצלחה!";

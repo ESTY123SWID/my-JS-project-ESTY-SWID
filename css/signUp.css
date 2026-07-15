@@ -209,26 +209,23 @@ select{
     color: #7d8696;
 
 }
-#msg{
+#is-success{
 
+    margin-top:20px;
 
-    margin-top: 20px;
+    width:100%;
 
-    display: flex;
+    padding-right:40px;
 
-    justify-content: center;
+    box-sizing:border-box;
 
-    align-items: center;
+    text-align:right;
 
-    text-align: center;
+    font-size:18px;
 
-    font-size: 18px;
+    font-weight:500;
 
-    font-weight: 500;
-
-    color: #1d4ed8;
-
-    transition: .3s;
+    color:red;
 
 }
 

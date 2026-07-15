@@ -11,7 +11,7 @@ const addAllDataToLs=()=>{
 }
 addAllDataToLs()
 const getUsers=()=>{
-    return JSON.parse(localStorage.getItem("users"))
+    return JSON.parse(localStorage.getItem("users"))||[]
 
 }
 const getMessages=()=>{
@@ -39,18 +39,18 @@ const setUser=(newUser)=>{
 
 }
 const getTasks=()=>{
-    return JSON.parse(localStorage.getItem("tasks"))
+    return JSON.parse(localStorage.getItem("tasks"))||[]
 }
 const setTasks=(task)=>{
-    const allTask=getTasks()||[]
+    const allTask=getTasks()
     allTask.push(task)
     localStorage.setItem("tasks",JSON.stringify(allTask))
 }
 const getCurrent=()=>{
-    return JSON.parse(localStorage.getItem("current"))
+    return JSON.parse(localStorage.getItem("current"))||[]
 }
 const getManagerBackUp=()=>{
-    return JSON.parse(localStorage.getItem("managerBackUp"))
+    return JSON.parse(localStorage.getItem("managerBackUp"))||[]
 }
 const setUsers = (users) => {
     localStorage.setItem("users", JSON.stringify(users))
@@ -61,5 +61,5 @@ const setTasksToLs=(allTask)=>{
 }
 const removeCurrent=()=>{
     localStorage.removeItem("current")
-     window.location.href="../html/login.html"
+    location.href="../html/login.html"
 }

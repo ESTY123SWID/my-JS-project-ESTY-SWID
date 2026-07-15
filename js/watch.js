@@ -4,14 +4,20 @@ const studentsContainer = document.querySelector("#students-container")
 const studentSearchInput = document.querySelector("#student-search-input")
 
 let usersAll = getUsers()
+const tasksAll = getTasks() 
 const current = getCurrent()
-if(!current)
-{
-    window.location.href="../html/login.html"
+if (!current) {
+    window.location.href = "../html/login.html"
+}
+
+const findAdminIdByTaskid = (tId) => {
+    const filtedId = tasksAll.find(x => x.id == tId)
+    
+    return filtedId.principalId
 }
 
 studentSearchInput.oninput = (e) => {
-    const filted = usersAll.filter(x => x.role == "student" && x.principalId == current.id).filter(student =>
+    const filted = usersAll.filter(x => x.role == "student" && x.principalId.includes(current.id)).filter(student =>
         student.name.toLowerCase().includes(e.target.value.trim().toLowerCase()) || student.id.includes(e.target.value.trim())
     )
     if (filted.length > 0) {
@@ -22,8 +28,8 @@ studentSearchInput.oninput = (e) => {
     }
 }
 const setPercents = (currentStudent) => {
-    const total = currentStudent.taskArray?.length || 0;
-    const rest = currentStudent.taskArray?.filter(x => !x.isDone).length || 0
+    const total = currentStudent.taskArray?.filter(x=>findAdminIdByTaskid(x.tId)==current.id).length || 0;
+    const rest = currentStudent.taskArray?.filter(x => !x.isDone&&findAdminIdByTaskid(x.tId)==current.id).length || 0
     const totalPercents = total > 0 ? Math.round(((total - rest) / total) * 100) : 0;
     return totalPercents
 }
@@ -81,8 +87,7 @@ const setStudentsContainer = (arr) => {
         viewProfileBtn.className = "view-profile-btn"
         viewProfileBtn.innerText = "צפיה בפרופיל"
         viewProfileBtn.onclick = () => {
- 
-            window.location.href = `../html/student.html?id=${element.id}&principalId=${current.id}`
+            window.location.href = `../html/student.html?id=${element.id}`
         }
         studentCardActions.append(viewProfileBtn)
 
@@ -90,28 +95,40 @@ const setStudentsContainer = (arr) => {
         deleteStudentBtn.className = "delete-student-btn"
         deleteStudentBtn.innerText = "מחיקה"
         deleteStudentBtn.onclick = () => {
-            const filtedArr = usersAll.filter(x => x.id != element.id)
+            const numOfAdmins = usersAll.find(x => x.id == element.id).principalId.length
+            if (numOfAdmins == 1) {
+                const filtedArr = usersAll.filter(x => x.id != element.id)
+                usersAll = filtedArr
             setUsers(filtedArr)
-            usersAll = filtedArr
-            const updatedStudents = filtedArr.filter(x => x.role == "student" && x.principalId == current.id);
+
+            }
+            else{
+            const allTasksOfCurrentAdmin=tasksAll.filter(x=>x.principalId==current.id).map(x=>x.id)
+             element.taskArray=element.taskArray.filter(x=>!allTasksOfCurrentAdmin.includes(x.tId))
+             element.principalId=element.principalId.filter(x=>x!=current.id)
+             setUsers(usersAll)
+            }
+
+            const updatedStudents = usersAll.filter(x => x.role == "student" && x.principalId.includes(current.id));
             setStudentsContainer([...updatedStudents].sort((a, b) => a.name.trim().localeCompare(b.name.trim())));
+// אני אשמח אם המורה תוכל לומר לי למה המיון לא עבד בלי פירור של המערך???
         }
         studentCardActions.append(deleteStudentBtn)
 
         student.append(studentCardActions)
         studentsContainer.append(student)
 
+
     });
 }
 
-setStudentsContainer(usersAll.filter(x => x.role == "student" && x.principalId == current.id)
-.sort((a, b) => a.name.trim().localeCompare(b.name.trim())) || [])
-
+setStudentsContainer(usersAll.filter(x => x.role == "student" && x.principalId.includes(current.id))
+    .sort((a, b) => a.name.trim().localeCompare(b.name.trim())) || [])
 
 backBtn.onclick = () => {
     window.location.href = "../html/admin.html"
 }
 addStudentFastBtn.onclick = () => {
-    
+
     window.location.href = "../html/newStudent.html"
 }

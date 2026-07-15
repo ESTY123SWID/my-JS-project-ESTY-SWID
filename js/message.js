@@ -7,12 +7,13 @@ const msgText = document.querySelector("#msg-text")
 msgText.parentElement.style.position = "relative";
 msgText.setAttribute("data-tooltip", "ההודעה תופץ לכל התלמידים שלך");
 let msg = getMessages()
-console.log(msg)
+
 const current = getCurrent()
 if(!current)
 {
     window.location.href="../html/login.html"
 }
+//אני אשמח אם המורה תוכל להסביר לי למה כשהכנסנו את זה לתוך if זה עצר את הרינדור האינסופי המתרגלת הסתבכה להסביר לי למה?
 else{
 
 msgForm.onsubmit = (e) => {
@@ -89,13 +90,13 @@ const setHistoryCard = (arr) => {
         messagesHistoryCard.append(messagesContainer)
 
 }
-////////////
-function renderFilteredHistory() {
+
+const  renderFilteredHistory=()=> {
     const now = new Date();
     const tenAgo = new Date();
     tenAgo.setDate(now.getDate() - 10);
     
-    // מסננים לפי זמן ולפי המנהל הנוכחי ביחד!
+
     const recentMsg = msg.filter(x => {
         const datePart = x.dateTime.split("|")[0].trim();
         const [day, month, year] = datePart.split(".");
@@ -110,11 +111,6 @@ function renderFilteredHistory() {
         messagesHistoryCard.innerHTML = "<h2 class='section-title'>הודעות שנוספו לאחרונה</h2><p style='text-align:center; color:#6b7280; padding:20px;'>אין הודעות מהזמן האחרון</p>";
     }
 }
-///////////
-
-
-
-
 
 
 
