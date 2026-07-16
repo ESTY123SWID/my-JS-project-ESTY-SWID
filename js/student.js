@@ -258,8 +258,10 @@ const setCards = (arr) => {
 
 }
 search.oninput = (e) => {
-    filtArr = tasksAll.filter(x => (fromAdmin ? x.principalId == current.id : current.principalId.includes(x.principalId)) && (x.title.toLowerCase().includes(e.target.value.toLowerCase().trim()) || x.category.toLowerCase().includes(e.target.value.toLowerCase().trim())))
+    filtArr = tasksAll.filter(x => (fromAdmin ? x.principalId == currentCheck.id : current.principalId.includes(x.principalId)) && (x.title.toLowerCase().includes(e.target.value.toLowerCase().trim()) || x.category.toLowerCase().includes(e.target.value.toLowerCase().trim())))
+    
     filtId = filtArr.map(x => x.id)
+    
     filtfiltArr = current.taskArray.filter(x => filtId.includes(x.tId))
     if (filtfiltArr.length === 0) {
         tasksToHtml.innerText = "לא נמצאו משימות תואמות ..."

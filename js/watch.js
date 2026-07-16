@@ -21,7 +21,7 @@ studentSearchInput.oninput = (e) => {
         student.name.toLowerCase().includes(e.target.value.trim().toLowerCase()) || student.id.includes(e.target.value.trim())
     )
     if (filted.length > 0) {
-        setStudentsContainer(filted)
+        setStudentsContainer(filted.sort((a, b) => a.name.trim().localeCompare(b.name.trim())))
     }
     else {
         studentsContainer.innerText = "לא נמצאו סטודנטים תואמים לפרטים שהוזנו..."
